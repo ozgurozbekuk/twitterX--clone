@@ -4,6 +4,7 @@ import connectMongoDB from "./db/connectMongo.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js"
+import postRoutes from "./routes/post.routes.js"
 import {v2 as cloudinary} from "cloudinary"
 
 
@@ -21,9 +22,13 @@ const PORT = process.env.PORT || 5001;
 //middleware
 app.use(express.json()) //parse req.body
 app.use(express.urlencoded({extended:true})) //parse form data
+
+
 app.use(cookieParser())
+
 app.use('/api/auth',authRoutes)
 app.use('/api/users',userRoutes)
+app.use('/api/posts',postRoutes)
 
 
 

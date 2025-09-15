@@ -1,0 +1,18 @@
+/* app.css veya input.css */
+@import "tailwindcss";
+
+/* Aktif temalar: light ve black (light'ı varsayılan istersen --default ekle) */
+@plugin "daisyui" {
+  themes: light --default, black;
+}
+
+/* Built-in "black" temasını ismiyle yeniden tanımlayıp sadece istediğin renkleri ez */
+@plugin "daisyui/theme" {
+  name: "black";
+  --color-primary: rgb(29 155 240);
+  --color-secondary: rgb(24 24 24);
+
+  /* İsteğe bağlı: kontrast için content renkleri */
+  --color-primary-content: rgb(255 255 255);
+  --color-secondary-content: rgb(255 255 255);
+}

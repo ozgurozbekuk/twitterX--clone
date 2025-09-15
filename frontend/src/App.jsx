@@ -22,7 +22,7 @@ function App() {
         const data =await res.json();
         if(data.error) return null
         if(!res.ok){
-          throw new Error(data.error)
+          throw new Error(data.error || "Something went wrong. ")
         }
 
         console.log("Auth user: ",data)

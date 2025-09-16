@@ -21,7 +21,7 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 //middleware
-app.use(express.json()) //parse req.body
+app.use(express.json({limit:"5mb"})) //parse req.body
 app.use(express.urlencoded({extended:true})) //parse form data
 
 

@@ -2,7 +2,7 @@ import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
 import { populate } from "dotenv";
-import cloudinary from "cloudinary"
+import cloudinary from "cloudinary";
 
 export const createPost = async (req, res) => {
   try {
@@ -72,17 +72,19 @@ export const commentPost = async (req, res) => {
       res.status(400).json({ error: "Text field required!" });
     }
 
-    const post = await Post.findById(postId);
-
-    if (!post) {
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $push: { comments: { user: userId, text: text.trim() } } },
+      { new: true }
+    )
+      .populate("user", "username fullName profileImg")
+      .populate("comments.user", "username fullName profileImg");
+    if (!updatedPost) {
       res.status(404).json({ error: "Post not found" });
     }
 
-    const comment = { user: userId, text };
-    post.comments.push(comment);
-    await post.save();
-
-    res.status(200).json(post);
+    
+    res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.log("'Comment post controller error: ", error);
@@ -105,7 +107,9 @@ export const likeUnlikePost = async (req, res) => {
       await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
       await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
 
-      const updatedLikes = post.likes.filter((id)=>id.toString !== userId.toString)
+      const updatedLikes = post.likes.filter(
+        (id) => id.toString !== userId.toString
+      );
       res.status(200).json(updatedLikes);
     } else {
       post.likes.push(userId);
@@ -120,7 +124,7 @@ export const likeUnlikePost = async (req, res) => {
 
       await notification.save();
 
-      const updatedLikes = post.likes
+      const updatedLikes = post.likes;
       res.status(200).json(updatedLikes);
     }
   } catch (error) {
@@ -204,7 +208,7 @@ export const getUserPosts = async (req, res) => {
       .populate({ path: "user", select: "-password" })
       .populate({ path: "comments.user", select: "-password" });
 
-    res.status(200).json(posts)
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: "Internal server error!" });
     console.log("Following users error:", error);

@@ -23,7 +23,7 @@ const Sidebar = () => {
 					}
 				})
 
-				const authUser = res.json()
+				const authUser =await res.json()
 				console.log(authUser)
 				if(!res.ok){
 					throw new Error(authUser.error || "Something went wrong")

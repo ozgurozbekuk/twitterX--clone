@@ -1,3 +1,4 @@
+import path from "path"
 import express from "express";
 import authRoutes from "./routes/auth.routes.js"
 import connectMongoDB from "./db/connectMongo.js";
@@ -19,6 +20,7 @@ cloudinary.config({
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+const __dirname = path.resolve()
 
 //middleware
 app.use(express.json({limit:"5mb"})) //parse req.body
@@ -32,6 +34,13 @@ app.use('/api/users',userRoutes)
 app.use('/api/posts',postRoutes)
 app.use("/api/notifications",notificationRoute)
 
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static(path.join(__dirname,"/frontend/dist")))
+
+    app.get(/^\/(?!api).*/,(req,res) =>{
+        res.sendFile(path.resolve(__dirname,"frontend","dist","index.html"))
+    })
+}
 
 
 
